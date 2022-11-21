@@ -20,12 +20,13 @@ public class WordCount {
 
 	private static int k = 0;
 
-	public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable>{
+	//Could utilize a hashmap to combine values 
+	public static class mMapper extends Mapper<Object, Text, Text, IntWritable>{
 
 		private Text itemset = new Text();
 
 		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-
+			
 			String[] transactions = value.toString().split(",");
 
 			List<String> itemsets = getItemSet(transactions);
@@ -33,7 +34,7 @@ public class WordCount {
 
 			for(String set: itemsets) {
 				itemset.set(set);
-				context.write(itemset, new IntWritable(1));
+				context.write(itemset,new IntWritable(1));
 
 			}
 		}
@@ -101,18 +102,17 @@ public class WordCount {
 			 * 
 			 */
 			
+			String line = "[";
+			
+			for(String k: key.toString().split(",")) {
+				line += k + ", ";
+			}
 			
 			int sum = 0;
 			for (IntWritable val : values) {
 				sum += val.get();
 			}
 			
-			String line = "[";
-			
-			for(String k: key.toString().split(",")) {
-				line += k + ", ";
-			}
-
 			line = line.substring(0, line.length()-2) + "]";
 
 			if(sum/k > (3/5)) {
@@ -120,16 +120,18 @@ public class WordCount {
 				context.write(new Text(line), result);
 			}
 		}
+		
 	}
 
 	public static void main(String[] args) throws Exception {
+		//hadoop jar target/MapReduce-0.0.1-SNAPSHOT.jar Hadoop.MapReduce.WordCount groceries.csv <output> <k>
 
 		k = Integer.parseInt(args[2]);
 
 		Configuration conf = new Configuration();
 		Job job = Job.getInstance(conf, "word count");
 		job.setJarByClass(WordCount.class);
-		job.setMapperClass(TokenizerMapper.class);
+		job.setMapperClass(mMapper.class);
 
 		job.setPartitionerClass(pPartitioner.class);
 		job.setReducerClass(rReducer.class);
