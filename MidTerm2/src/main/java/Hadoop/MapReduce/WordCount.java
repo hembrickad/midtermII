@@ -86,8 +86,9 @@ public class WordCount {
 			/*WordCountGrouped? code to combine similar numbers
 			 * 
 			 * String line = "["
+			 *
 			 * 
-			 * for(Text val:value){
+			 * for(Text k: key){
 			 * 
 			 * 		line += val.get() + ", ";
 			 * 
@@ -108,14 +109,14 @@ public class WordCount {
 			
 			String line = "[";
 			
-			for(Text k: key) {
-				line += k.g
+			for(String k: key.toString().split(",")) {
+				line += k + ", ";
 			}
 			
 
 			if(sum/k > (3/5)) {
 				result.set(sum);
-				context.write(key, result);
+				context.write(new Text(line), result);
 			}
 		}
 	}
