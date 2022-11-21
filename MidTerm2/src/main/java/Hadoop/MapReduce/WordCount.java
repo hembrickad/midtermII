@@ -55,7 +55,7 @@ public class WordCount {
 					if((masks[j] & i) != 0) {
 						newList.add(items[j]);
 					}
-					if(j == n-1 && newList.size() > 0 && newList.size() < 5)
+					if(j == n-1 && newList.size() > 0 && newList.size() < k)
 						itemset.add(newList.toString());
 				}
 			}
@@ -83,10 +83,35 @@ public class WordCount {
 		private IntWritable result = new IntWritable();
 
 		public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+			/*WordCountGrouped? code to combine similar numbers
+			 * 
+			 * String line = "["
+			 * 
+			 * for(Text val:value){
+			 * 
+			 * 		line += val.get() + ", ";
+			 * 
+			 * }
+			 * 
+			 *  line = line.substring(0, line.length()-2) + "]
+			 *  
+			 *  context.write(    )
+			 * 
+			 * 
+			 */
+			
+			
 			int sum = 0;
 			for (IntWritable val : values) {
 				sum += val.get();
 			}
+			
+			String line = "[";
+			
+			for(Text k: key) {
+				line += k.g
+			}
+			
 
 			if(sum/k > (3/5)) {
 				result.set(sum);
