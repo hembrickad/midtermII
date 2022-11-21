@@ -112,7 +112,8 @@ public class WordCount {
 			for(String k: key.toString().split(",")) {
 				line += k + ", ";
 			}
-			
+
+			line = line.substring(0, line.length()-2) + "]";
 
 			if(sum/k > (3/5)) {
 				result.set(sum);
