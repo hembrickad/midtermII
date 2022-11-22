@@ -56,7 +56,7 @@ public class WordCount {
 					if((masks[j] & i) != 0) {
 						newList.add(items[j]);
 					}
-					if(j == n-1 && newList.size() > 0 && newList.size() < k)
+					if(j == n-1 && newList.size() < k  && newList.size() > 0)
 						itemset.add(newList.toString());
 				}
 			}
@@ -80,7 +80,7 @@ public class WordCount {
 		}	
 	}
 
-	public static class rReducer extends Reducer<Text,IntWritable,Text,IntWritable> {
+	public static class rReducer extends Reducer<Text,IntWritable,IntWritable,Text> {
 		private IntWritable result = new IntWritable();
 
 		public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
@@ -117,7 +117,7 @@ public class WordCount {
 
 			if(sum/k > (3/5)) {
 				result.set(sum);
-				context.write(new Text(line), result);
+				context.write(result, new Text(line));
 			}
 		}
 		
@@ -135,8 +135,8 @@ public class WordCount {
 
 		job.setPartitionerClass(pPartitioner.class);
 		job.setReducerClass(rReducer.class);
-		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(IntWritable.class);
+		job.setOutputValueClass(Text.class);
+		job.setOutputKeyClass(IntWritable.class);
 		FileInputFormat.addInputPath(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		System.exit(job.waitForCompletion(true) ? 0 : 1);
